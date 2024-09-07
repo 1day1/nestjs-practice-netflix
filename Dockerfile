@@ -4,10 +4,9 @@ FROM node:22
 # 작업 디렉토리 설정
 WORKDIR /usr/src/app
 
-# git clone
-RUN apt-get update && apt-get install -y git
-
-RUN git clone https://github.com/1day1/nestjs-practice-netflix .
+# git clone => use github app
+#RUN apt-get update && apt-get install -y git
+#RUN git clone https://github.com/1day1/nestjs-practice-netflix .
 
 # pnpm 설치
 RUN npm install -g pnpm
