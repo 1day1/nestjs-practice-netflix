@@ -12,14 +12,14 @@ RUN git clone https://github.com/1day1/nestjs-practice-netflix .
 # pnpm 설치
 RUN npm install -g pnpm
 
-# 앱 의존성 파일들 복사
-COPY package.json pnpm-lock.yaml ./
+# 앱 의존성 파일들 복사 - already exists
+#COPY package.json pnpm-lock.yaml ./
 
 # 의존성 설치
 RUN pnpm install
 
-# 앱 소스 복사
-COPY . .
+# 앱 소스 복사 - already exists
+#COPY . .
 
 # 앱 빌드
 RUN pnpm run build
