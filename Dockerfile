@@ -1,20 +1,23 @@
 # 베이스 이미지로 Node.js 사용
-FROM node:22
-LABEL org.opencontainers.image.source="https://github.com/1day1/nestjs-practice-netflix"
-COPY ./* /app
-
-# 작업 디렉토리 설정
-WORKDIR /app
+FROM node:22-slim
 
 # pnpm 설치
 RUN npm install -g pnpm
 
+# 작업 디렉토리 설정
+WORKDIR /app
+
+# 애플리케이션 파일 복사
+COPY package.json pnpm-lock.yaml ./
+
 # 의존성 설치
-RUN pnpm install
+RUN pnpm install --prod
 
 # 앱 빌드
 RUN pnpm run build
 
+# 애플리케이션 코드 복사
+COPY . .
 
 # 프로덕션 모드로 실행
 CMD ["pnpm", "run", "start:prod"]
