@@ -32,7 +32,7 @@ COPY --from=builder /usr/src/app/pnpm-lock.yaml ./
 COPY --from=builder /usr/src/app/dist ./dist
 
 # 프로덕션 의존성만 설치
-RUN pnpm install
+RUN pnpm install --prod
 
 
 # 프로덕션 모드로 실행
