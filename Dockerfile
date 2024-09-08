@@ -21,7 +21,7 @@ RUN pnpm run build
 FROM node:22-slim
 
 # 작업 디렉토리 설정
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # pnpm 설치
 RUN npm install -g pnpm
@@ -32,7 +32,7 @@ COPY --from=builder /usr/src/app/pnpm-lock.yaml ./
 COPY --from=builder /usr/src/app/dist ./dist
 
 # 프로덕션 의존성만 설치
-RUN pnpm install --prod
+RUN pnpm install
 
 
 # 프로덕션 모드로 실행
