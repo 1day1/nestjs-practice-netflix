@@ -5,6 +5,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DirectorModule } from './director/director.module';
 import { GenreModule } from './genre/genre.module';
 import * as Joi from 'joi';
+import { Movie } from './movie/entity/movie.entity';
+import { Director } from './director/entitiy/director.entity';
+import { Genre } from './genre/entitiy/genre.entity';
+import { MovieDetail } from './movie/entity/movie-detail.entity';
 
 @Module({
   imports: [
@@ -28,7 +32,12 @@ import * as Joi from 'joi';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [],
+        entities: [
+          Movie,
+          MovieDetail,
+          Director,
+          Genre,
+        ],
         synchronize: true,
       }),
       inject: [ConfigService],
