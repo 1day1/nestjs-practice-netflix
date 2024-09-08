@@ -1,5 +1,5 @@
 # 베이스 이미지로 Node.js 사용
-FROM node:22-slim
+FROM node:22
 
 # pnpm 설치
 RUN npm install -g pnpm
