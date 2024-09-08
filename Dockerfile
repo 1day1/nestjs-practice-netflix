@@ -8,7 +8,9 @@ WORKDIR /usr/src/app
 RUN npm install -g pnpm
 
 # 의존성 파일 복사
-COPY package.json pnpm-lock.yaml tsconfig.json ./
+# COPY package.json pnpm-lock.yaml tsconfig.json ./
+# 모든 소스 파일 복사
+COPY . .
 
 # 의존성 설치
 RUN pnpm install
