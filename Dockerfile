@@ -13,11 +13,11 @@ COPY package.json pnpm-lock.yaml ./
 # 의존성 설치
 RUN pnpm install --prod
 
-# 앱 빌드
-RUN pnpm run build
-
 # 애플리케이션 코드 복사
 COPY . .
+
+# 앱 빌드
+RUN pnpm run build
 
 # 프로덕션 모드로 실행
 CMD ["pnpm", "run", "start:prod"]
