@@ -7,11 +7,6 @@ import { UpdateGenreDto } from './dto/update-genre.dto';
 export class GenreController {
   constructor(private readonly genreService: GenreService) {}
 
-  @Post()
-  create(@Body() createGenreDto: CreateGenreDto) {
-    return this.genreService.create(createGenreDto);
-  }
-
   @Get()
   findAll() {
     return this.genreService.findAll();
@@ -21,6 +16,12 @@ export class GenreController {
   findOne(@Param('id') id: string) {
     return this.genreService.findOne(+id);
   }
+  
+  @Post()
+  create(@Body() createGenreDto: CreateGenreDto) {
+    return this.genreService.create(createGenreDto);
+  }
+
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateGenreDto: UpdateGenreDto) {

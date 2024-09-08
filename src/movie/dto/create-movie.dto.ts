@@ -1,3 +1,4 @@
+import { Optional } from "@nestjs/common";
 import { ArrayNotEmpty, IsArray, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateMovieDto {
@@ -8,6 +9,10 @@ export class CreateMovieDto {
     @IsNotEmpty()
     @IsString()
     detail: string;
+
+    // @IsNotEmpty()
+    // @IsString()
+    // genre: string;
 
     @IsNotEmpty()
     @IsNumber()
