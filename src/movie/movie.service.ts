@@ -28,12 +28,12 @@ export class MovieService {
   async getManyMovies(title?: string){
     if(!title){
       // return this.movies;
-      return [
-        await this.movieRepository.find({
+      return {
+        'data' : await this.movieRepository.find({
             relations: ['detail', 'director', 'genres'],
            }),
-        await this.movieRepository.count()
-      ];
+        'total' : await this.movieRepository.count(),
+        };
     }
     // return this.movies.filter(movie => movie.title.includes(title));
     // return this.movies.filter(movie => movie.title.startsWith(title));
