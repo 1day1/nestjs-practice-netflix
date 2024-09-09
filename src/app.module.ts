@@ -9,6 +9,9 @@ import { Movie } from './movie/entity/movie.entity';
 import { Director } from './director/entitiy/director.entity';
 import { Genre } from './genre/entitiy/genre.entity';
 import { MovieDetail } from './movie/entity/movie-detail.entity';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { User } from './user/entitiy/user.entity';
 
 @Module({
   imports: [
@@ -22,6 +25,9 @@ import { MovieDetail } from './movie/entity/movie-detail.entity';
         DB_USERNAME: Joi.string().required(),
         DB_PASSWORD: Joi.string().required(),
         DB_DATABASE: Joi.string().required(),
+        HASH_ROUNDS: Joi.number().required(),
+        ACCESS_TOKEN_SECRET: Joi.string().required(),
+        REFRESH_TOKEN_SECRET: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRootAsync({
@@ -37,6 +43,7 @@ import { MovieDetail } from './movie/entity/movie-detail.entity';
           MovieDetail,
           Director,
           Genre,
+          User,
         ],
         synchronize: true,
       }),
@@ -45,6 +52,8 @@ import { MovieDetail } from './movie/entity/movie-detail.entity';
     MovieModule,
     DirectorModule,
     GenreModule,
+    AuthModule,
+    UserModule,
   ],
 })
 export class AppModule {}
