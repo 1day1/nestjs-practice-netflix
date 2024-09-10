@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { envVariableKeys } from 'src/common/const/env.const';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,36 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) {}
 
+    async parseBearerToken(rawToken: string) {
+        const basicSplit = rawToken.split(' ');
+
+        if( basicSplit.length !== 2){
+            throw new Error('Invalid Basic Authorization');
+        }
+
+        const [bearer, token] = basicSplit;
+
+        if( bearer.toLocaleLowerCase() !== 'bearer'){
+            throw new BadRequestException('Invalid token type');
+        }
+
+        try{
+            const payload = await this.jwtService.verifyAsync(token, {
+                secret: this.configService.get<string>(envVariableKeys.refreshTokenSecret),
+            })
+    
+            if( payload.type !== 'refresh'){
+                throw new BadRequestException('Invalid token type : need refresh token');
+            }
+    
+            return payload;
+    
+        }catch(e){
+            throw new BadRequestException('token expired');
+        }
+
+    }
+
     parseBasicToken(rawToken: string) {
         const basicSplit = rawToken.split(' ');
 
@@ -23,6 +54,11 @@ export class AuthService {
         }
 
         const [basic, token] = basicSplit;
+
+        if( basic.toLocaleLowerCase() !== 'basic'){
+            throw new BadRequestException('Invalid token type');
+        }
+
         const decoded = Buffer.from(token, 'base64').toString('utf-8');
 
         const tokenSplit = decoded.split(':');
@@ -89,8 +125,8 @@ export class AuthService {
 
 
     async issueToken(user: { id: number, role: Role }, isRefreshToken: boolean) {
-        const refreshTokenSecret = this.configService.get<string>('REFRESH_TOKEN_SECRET');
-        const accessTokenSecret = this.configService.get<string>('ACCESS_TOKEN_SECRET');
+        const refreshTokenSecret = this.configService.get<string>(envVariableKeys.refreshTokenSecret);
+        const accessTokenSecret = this.configService.get<string>(envVariableKeys.accessTokenSecret);
 
         return this.jwtService.signAsync({
             sub: user.id,
