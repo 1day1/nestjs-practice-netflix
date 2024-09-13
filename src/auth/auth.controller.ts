@@ -15,20 +15,21 @@ export class AuthController {
     return this.authService.loginUser(token);
   }
 
-  // @Post('token/access')
-  // rotateAccessToken(@Request() req) {
-  //   return {
-  //     accessToken: this.authService.issueToken(req.user, false),
-  //   }
-  // }
-
   @Post('token/access')
-  async rotateAccessToken(@Headers('authorization') token: string) {
-    const payload = await this.authService.parseBearerToken(token);
-
+  async rotateAccessToken(@Request() req) {
+    this.authService.checkTokenType(req.user, true);
     return {
-      accessToken: await this.authService.issueToken(payload, false),
+      accessToken: await this.authService.issueToken(req.user, false),
     }
   }
+
+  // @Post('token/access')
+  // async rotateAccessToken(@Headers('authorization') token: string) {
+  //   const payload = await this.authService.parseBearerToken(token);
+
+  //   return {
+  //     accessToken: await this.authService.issueToken(payload, false),
+  //   }
+  // }
 
 }

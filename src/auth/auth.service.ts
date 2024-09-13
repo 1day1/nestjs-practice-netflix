@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role, User } from 'src/user/entitiy/user.entity';
 import { Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { envVariableKeys } from 'src/common/const/env.const';
+import { isRef } from 'joi';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) {}
 
-    async parseBearerToken(rawToken: string) {
+    async parseBearerToken(rawToken: string, isRefreshToken: boolean) {
         const basicSplit = rawToken.split(' ');
 
         if( basicSplit.length !== 2){
@@ -31,19 +32,33 @@ export class AuthService {
 
         try{
             const payload = await this.jwtService.verifyAsync(token, {
-                secret: this.configService.get<string>(envVariableKeys.refreshTokenSecret),
+                secret: this.configService.get<string>(
+                    isRefreshToken ? 
+                        envVariableKeys.refreshTokenSecret : 
+                        envVariableKeys.accessTokenSecret
+                ),
             })
-    
-            if( payload.type !== 'refresh'){
-                throw new BadRequestException('Invalid token type : need refresh token');
-            }
+
+            this.checkTokenType(payload, isRefreshToken);
     
             return payload;
     
         }catch(e){
-            throw new BadRequestException('token expired');
+            throw new UnauthorizedException('token expired');
         }
 
+    }
+
+    checkTokenType(payload: any, isRefreshToken: boolean) {
+        if( isRefreshToken ){
+            if( payload.type !== 'refresh'){
+                throw new BadRequestException('Invalid token type : need refresh token');
+            }
+        }else{
+            if( payload.type !== 'access'){
+                throw new BadRequestException('Invalid token type : need access token');
+            }
+        }
     }
 
     parseBasicToken(rawToken: string) {
@@ -150,7 +165,7 @@ export class AuthService {
             accessToken : await this.issueToken(user, false),
         }
 
-      }
+    }
   
   
 }
